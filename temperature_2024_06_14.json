@@ -1,0 +1,21 @@
+{
+    "sensor_name": "temperature",
+    "measurements": [
+        {
+            "timestamp": "2024-06-14 20:36:15",
+            "value": 20.6
+        },
+        {
+            "timestamp": "2024-06-14 20:37:16",
+            "value": 20.7
+        },
+        {
+            "timestamp": "2024-06-14 20:38:17",
+            "value": 20.7
+        },
+        {
+            "timestamp": "2024-06-14 20:39:18",
+            "value": 20.7
+        }
+    ]
+}
