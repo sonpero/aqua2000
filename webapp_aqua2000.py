@@ -1,4 +1,6 @@
 import json
+import fcntl
+
 from datetime import datetime
 
 import streamlit as st
@@ -14,7 +16,7 @@ with open("style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Autorefresh:
-count = st_autorefresh(interval=5000, limit=100, key="fizzbuzzcounter")
+count = st_autorefresh(interval=5000, key="fizzbuzzcounter")
 
 # logo aqua 2000
 logo = Image.open("logo_aqua2000.png")
@@ -45,11 +47,17 @@ add_selectbox = st.sidebar.selectbox(
 current_date = datetime.now().strftime("%Y_%m_%d")
 year = datetime.now().strftime("%Y")
 path_to_temperature = f"/Volumes/aqua2000/{year}/temperature_{current_date}.json"
-f = open(path_to_temperature)
 
-# returns JSON object as
-# a dictionary
-values = json.load(f)
+with open(path_to_temperature, 'r') as file:
+    # Shared lock for reading
+    fcntl.flock(file, fcntl.LOCK_SH) 
+    # returns JSON object as
+    # a dictionary
+    values = json.load(file)
+    # Unlock the file
+    fcntl.flock(file, fcntl.LOCK_UN)
+
+
 sensor = values["sensor_name"]
 sensor_values = values["measurements"]
 print(sensor_values)

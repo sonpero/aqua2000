@@ -1,3 +1,9 @@
 /__pycache__
 .DS_Store
 .gitignore
+.idea/aqua2000.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/inspectionProfiles/profiles_settings.xml

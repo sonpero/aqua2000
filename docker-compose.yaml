@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  webapp:
+    image: sonpero/aqua2000:1.0.0
+    ports:
+      - "8501:8501"
+    volumes:
+      - /volume1/aqua2000:/Volumes/aqua2000
+    command: streamlit run webapp_aqua2000.py

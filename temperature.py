@@ -42,15 +42,18 @@ def read_temp():
         return temp_c
 
 while True:
-    # read the temp
-	value = read_temp()
-	print(f'Temperature is : {value}')
-    # open the json file
-	data = read_json('temperature')
-	value_to_append = {'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "value": value}
-    #  append the data and write to json
-	data['measurements'].append(value_to_append)
-	write_json('temperature', data)
-	time.sleep(60)
+    try:
+        # read the temp
+        value = read_temp()
+        print(f'Temperature is : {value}')
+        # open the json file
+        data = read_json('temperature')
+        value_to_append = {'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "value": value}
+        #  append the data and write to json
+        data['measurements'].append(value_to_append)
+        write_json('temperature', data)
+        time.sleep(60)
+    except Exception as e:
+        print(e)
 
