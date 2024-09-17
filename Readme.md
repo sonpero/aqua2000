@@ -19,5 +19,9 @@ sleep 10
 sudo python /home/alex/Documents/aqua2000/temperature.py &
 
 deployment steps:
-docker tag sonpero/aqua2000 sonpero/aqua2000:1.0.0
+docker build -t aqua2000 .  --platform=linux/amd64
+docker tag aqua2000 sonpero/aqua2000:1.0.0
+docker login
 docker push sonpero/aqua2000:1.0.0
+
+sur le nas : sudo docker-compose up

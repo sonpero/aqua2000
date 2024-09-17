@@ -1,7 +1,7 @@
 import json
 import fcntl
 
-from datetime import datetime
+import datetime as dt
 
 import streamlit as st
 import pandas as pd
@@ -25,16 +25,20 @@ logo = logo.resize((400, 200))
 # Row A
 a1, a2, a3 = st.columns(3)
 a1.image(logo)
-a2.metric("Last Temperature", f"{10}", f"{-0.5}" + "%")
-current_time = datetime.now().strftime("%H:%M:%S")
-a3.metric("Paris time", str(current_time))
+
+
+# Set the time to Paris time
+paris_timezone = dt.timezone(dt.timedelta(hours=2))
+current_time = dt.datetime.now(paris_timezone)
+current_time_formatted = current_time.strftime("%H:%M:%S")
+
+# affect time to a3
+a3.metric("Paris time", str(current_time_formatted))
 
 # Row B
 b1, b2, b3, b4 = st.columns(4)
 b1.metric("Humidity", f"{20}" + "%")
 b2.metric("Feels like", f"{3}")
-b3.metric("Highest temperature", f"{17}")
-b4.metric("Lowest temperature", f"{15}")
 
 
 # Add a selectbox to the sidebar:
@@ -44,8 +48,8 @@ add_selectbox = st.sidebar.selectbox(
 
 # reading data
 # Opening JSON file
-current_date = datetime.now().strftime("%Y_%m_%d")
-year = datetime.now().strftime("%Y")
+current_date = current_time.strftime("%Y_%m_%d")
+year = current_time.strftime("%Y")
 path_to_temperature = f"/Volumes/aqua2000/{year}/temperature_{current_date}.json"
 
 with open(path_to_temperature, 'r') as file:
@@ -60,7 +64,25 @@ with open(path_to_temperature, 'r') as file:
 
 sensor = values["sensor_name"]
 sensor_values = values["measurements"]
-print(sensor_values)
+
+# get last temperature
+last_temperature = float(sensor_values[-1]['value'])
+last_temperature_timestamp = sensor_values[-1]['timestamp']
+
+# extract date and time
+last_temperature_date = last_temperature_timestamp.split(' ')[0]
+last_temperature_time = last_temperature_timestamp.split(' ')[1]
+
+# get before last temperature
+before_last_temperature = float(sensor_values[-2]['value'])
+
+# calculate variation
+variation = float(last_temperature - before_last_temperature)
+
+a2.metric("Last Temperature", last_temperature, delta=variation)
+b3.metric("Last temperature", f"{last_temperature_date}")
+b4.metric("Last temperature", f"{last_temperature_time}")
+
 
 # create temperature tab
 temperature_tab = pd.DataFrame(sensor_values)
