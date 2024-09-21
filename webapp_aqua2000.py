@@ -31,14 +31,15 @@ a1.image(logo)
 paris_timezone = dt.timezone(dt.timedelta(hours=2))
 current_time = dt.datetime.now(paris_timezone)
 current_time_formatted = current_time.strftime("%H:%M:%S")
+current_date = current_time.strftime("%Y-%m-%d")
 
 # affect time to a3
 a3.metric("Paris time", str(current_time_formatted))
+a3.metric("Date", str(current_date))
 
 # Row B
 b1, b2, b3, b4 = st.columns(4)
-b1.metric("Humidity", f"{20}" + "%")
-b2.metric("Feels like", f"{3}")
+
 
 
 # Add a selectbox to the sidebar:
@@ -77,7 +78,7 @@ last_temperature_time = last_temperature_timestamp.split(' ')[1]
 before_last_temperature = float(sensor_values[-2]['value'])
 
 # calculate variation
-variation = float(last_temperature - before_last_temperature)
+variation = round(float(last_temperature - before_last_temperature), 2)
 
 a2.metric("Last Temperature", last_temperature, delta=variation)
 b3.metric("Last temperature", f"{last_temperature_date}")
@@ -94,6 +95,18 @@ temperature_tab["hour"] = temperature_tab.index.time
 
 temperature_tab = temperature_tab.reset_index()
 temperature_tab.drop(columns=["timestamp"], inplace=True)
+# get min and max
+min_temperature = temperature_tab["temperature"].min()
+max_temperature = temperature_tab["temperature"].max()
+
+# get the timestamp for min and max
+min_temperature_day = temperature_tab.loc[temperature_tab["temperature"].idxmin()]["day"]
+min_temperature_hour = temperature_tab.loc[temperature_tab["temperature"].idxmin()]["hour"]
+max_temperature_day = temperature_tab.loc[temperature_tab["temperature"].idxmax()]["day"]
+max_temperature_hour = temperature_tab.loc[temperature_tab["temperature"].idxmax()]["hour"]
+
+b1.metric("min", f"{min_temperature}", f"{min_temperature_day} {min_temperature_hour}", delta_color="off")
+b2.metric("max", f"{max_temperature}", f"{max_temperature_day} {max_temperature_hour}", delta_color="off")
 
 # Row C
 c1, c2 = st.columns(2)
